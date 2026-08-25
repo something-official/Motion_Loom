@@ -1,0 +1,11 @@
+const canvas = document.querySelector('#canvas');
+const context = canvas.getContext('2d');
+const speedInput = document.querySelector('#speed');
+const threadsInput = document.querySelector('#threads');
+const toggle = document.querySelector('#toggle');
+const reset = document.querySelector('#reset');
+let running = true; let started = performance.now();
+function resize() { const ratio = Math.min(devicePixelRatio || 1, 2); canvas.width = canvas.clientWidth * ratio; canvas.height = canvas.clientHeight * ratio; context.setTransform(ratio, 0, 0, ratio, 0, 0); }
+function smooth(value) { return value * value * (3 - 2 * value); }
+function draw(time) { const width = canvas.clientWidth; const height = canvas.clientHeight; const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches; const motionScale = reducedMotion ? .28 : 1; context.clearRect(0, 0, width, height); context.strokeStyle = '#fed7aa'; context.lineWidth = 1; for (let x = 0; x < width; x += 48) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, height); context.stroke(); } const count = Number(threadsInput.value); const speed = Number(speedInput.value); for (let i = 0; i < count; i += 1) { const phase = ((time - started) * .0002 * speed * motionScale + i / count) % 1; const eased = i % 3 === 0 ? phase : i % 3 === 1 ? smooth(phase) : phase * phase * (3 - 2 * phase); const x = 24 + eased * Math.max(1, width - 48); const y = 30 + (i / Math.max(1, count - 1)) * Math.max(1, height - 60); context.beginPath(); context.strokeStyle = ['#c2410c', '#ea580c', '#f59e0b', '#b45309'][i % 4]; context.lineWidth = 2 + (i % 3); context.moveTo(24, y); context.bezierCurveTo(width * .3, y - 30, width * .65, y + 30, x, y); context.stroke(); context.beginPath(); context.fillStyle = '#7c2d12'; context.arc(x, y, 5, 0, Math.PI * 2); context.fill(); } if (running) requestAnimationFrame(draw); }
+toggle.addEventListener('click', () => { running = !running; toggle.textContent = running ? 'Pause' : 'Resume'; if (running) { started = performance.now(); requestAnimationFrame(draw); } }); reset.addEventListener('click', () => { started = performance.now(); if (!running) { running = true; toggle.textContent = 'Pause'; } requestAnimationFrame(draw); }); window.addEventListener('resize', resize); resize(); requestAnimationFrame(draw);

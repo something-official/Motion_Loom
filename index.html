@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Motion Loom</title>
+  </head>
+  <body>
+    <main class="loom" aria-labelledby="title">
+      <section class="header"><div><p class="eyebrow">Timing and easing</p><h1 id="title">Motion Loom</h1><p>Adjust the loom, then observe how different easing curves spend time.</p></div><button id="toggle" type="button">Pause</button></section>
+      <canvas id="canvas" aria-label="Animated easing curve threads"></canvas>
+      <section class="controls" aria-label="Animation controls"><label>Speed <input id="speed" type="range" min=".2" max="2" step=".1" value="1" /></label><label>Threads <input id="threads" type="range" min="3" max="12" step="1" value="7" /></label><button id="reset" type="button">Reset motion</button></section>
+    </main>
+  </body>
+</html>
